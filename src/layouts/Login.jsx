@@ -6,8 +6,6 @@ import { connect,dispatch } from 'react-redux';
 import classNames from "classnames";
 import PropTypes from 'prop-types';
 
-
-
 // material-ui core
 import withStyles from "@material-ui/core/styles/withStyles";
 import IconButton from '@material-ui/core/IconButton';
@@ -114,7 +112,8 @@ class Login extends React.Component{
     vertical: 'top',
     horizontal: 'center',
     autoHideBar: 2000,
-    statusMessage: ''
+    statusMessage: '',
+    isDisable: false,
   };
   // login组件为了数据获取的便捷，先把React.Component的属性继承下来
   constructor(props){
@@ -205,6 +204,7 @@ class Login extends React.Component{
             this.handleLogin(res)
           })
          .catch((err)=>{
+           this.state.isDisable = false
             console.log('request fail')
          })
   }
@@ -218,9 +218,13 @@ class Login extends React.Component{
     let inputAccount = this.state.account
     let inputPassword = this.state.password
     if(respAccountInfo.accound !== inputAccount){
-      console.log('数据库没有该账户！');
+      console.log('数据库没有该账户!',this.state.isDisable);
+      /*o(=•ェ•=)m 为什么没有同步到 html的节点上去？ */
+      this.state.isDisable = false
+      console.log(this.state.isDisable);
       return
     }else if(respAccountInfo.password !== inputPassword){
+       this.state.isDisable = false
       console.log("密码错误！");
       return
     }else{
@@ -245,11 +249,14 @@ class Login extends React.Component{
       history.push(url.toPath); 
       url.toPath = '' 
     }
-}
+  }
   login(event){
     if(this.state.account === '' && this.state.password === '' ){
+      console.log(event.target);
       this.showSnackbar(event)
-    }else if( this.state.accInput && this.state.passInput ){
+    }else if( this.state.accInput && this.state.passInput ){  
+        this.state.isDisable = true
+        event.target.innerText = '请求中···'
         this.getData()
      }
   } 
@@ -308,6 +315,8 @@ class Login extends React.Component{
               color="primary"
               className={classNames(classes.button,classes.loginBtn)}
               onClick={(event)=>{this.login(event)}}
+              type="submit"
+              disabled={this.state.isDisable}
             >
             登录
             {/* 
