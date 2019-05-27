@@ -7,22 +7,18 @@ class PrivateRoute extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isAuthenticated: window.sessionStorage.getItem("userId") != null ? true: false
+            isAuthenticated: window.sessionStorage.getItem("userId") !== null ? true: false
         }
     }
     componentWillMount() {
-        const {history} = this.props;
+        const {history,location} = this.props;
         if(!this.state.isAuthenticated){
           history.replace("/login");
-        }else{
-          /*
-           let tempUrl = this.props.location.pathname
+          let tempUrl = this.props.location.pathname
           store.dispatch({
-             type: 'Login_Redirect_Event',
-             toPath: tempUrl   
-          })
-           */ 
-          history.replace("/admin/dashboard");
+            type: 'Login_Redirect_Event',
+            toPath: tempUrl, 
+          })  
         }
     }
 

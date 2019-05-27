@@ -34,9 +34,7 @@ import logo from "assets/img/katian_logo.png";
 // 数据请求
 import axios from "axios";
 
-
 // css样式
-
 const styles = theme => ({
   root:{
     flexGrow: 1,
@@ -133,7 +131,6 @@ class Login extends React.Component{
     this.setState({ open: false });
   };
 
-
   showSnackbar(targetEle){
     let delayTime = this.state.autoHideBar
     if(targetEle.id === 'adornment-account'){
@@ -155,18 +152,10 @@ class Login extends React.Component{
     }, delayTime)
 
   }
-
-
   /*  
-  
    showSnackbar = (targetEle)=>{
-
    }
-  
-
   */
-
-
   trimAll(val){
     let regTrim = /(^\s*)|(\s*$)/g
     val = val.replace(regTrim,'')
@@ -205,7 +194,6 @@ class Login extends React.Component{
       this.setState({ passInput: true }); 
    }
   }
- 
   getData(){
     axios.post('http://rap2api.taobao.org/app/mock/177373/userInfo',
           {
@@ -214,11 +202,10 @@ class Login extends React.Component{
           })
          .then(
           (res)=>{
-            console.log(res.status);
             this.handleLogin(res)
           })
          .catch((err)=>{
-          console.log('request fail')
+            console.log('request fail')
          })
   }
 
@@ -226,12 +213,11 @@ class Login extends React.Component{
 
  */
   handleLogin(dataInfo){
-    let statusInfo = dataInfo.data.statusInfo
+    let statusInfo = dataInfo.status
     let respAccountInfo = this.state.respAccountInfo = dataInfo.data.data
     let inputAccount = this.state.account
     let inputPassword = this.state.password
     if(respAccountInfo.accound !== inputAccount){
-      this.showSnackbar()
       console.log('数据库没有该账户！');
       return
     }else if(respAccountInfo.password !== inputPassword){
@@ -243,46 +229,30 @@ class Login extends React.Component{
     }
   }
 
-  goConsole(userToken){
-    const {history} = this.props;
-    window.sessionStorage.setItem("userId", userToken)
-    history.push("/admin");   
-    this.state.isLogin = true
-}
 
-
-/*
-
-    if( this.state.accInput && this.state.passInput){
-      this.getData()
-    }else if(this.state.account === '' && this.state.password === '' ){
-      this.showSnackbar(event)
-    }
-
-    login = (event) =>{
-    if(this.state.account === '' && this.state.password === '' ){
-      this.showSnackbar(event)
-    }
-    else if( this.state.accInput && this.state.passInput ){
-      this.getData()
-    }
-  }
-
+  /*
+   
 
  */
 
+  goConsole(userToken){
+    const {history,toPath} = this.props
+    let url = toPath
+    window.sessionStorage.setItem("userId", userToken)
+    if(url.toPath==='' || url.toPath==='undefined'){
+       history.push('/admin/dashboard');  
+    }else{
+      history.push(url.toPath); 
+      url.toPath = '' 
+    }
+}
   login(event){
     if(this.state.account === '' && this.state.password === '' ){
       this.showSnackbar(event)
     }else if( this.state.accInput && this.state.passInput ){
         this.getData()
      }
-
   } 
-
-
-
-
   render(){
   // 初期已然完成继承 现在是用继承数据的时候了
     const { classes } = this.props;
@@ -354,7 +324,6 @@ class Login extends React.Component{
              <Button onClick={this.handleClick({ vertical: 'top', horizontal: 'center' })}>
             消息条出来吧
           </Button>
-
              */}
           </Button>
          
@@ -367,8 +336,6 @@ class Login extends React.Component{
             message={<span id="statusMessage">{statusMessage}</span>}
           />
           </div>
-
-
         </div>
       </div>
     )
@@ -387,19 +354,24 @@ Login.propTypes = {
 // 处理自己的css样式 与ui组件融合
 let _Login = withStyles(styles)(Login);
 
-
-
-
-
 // 通过映射完成数据联通
+
 let mapStoreDataToProps = function(storeData){
   return {
     loading: storeData.loading,
-    // 写自己的数据对象
-    // test: storeData.test
-  };
+    toPath: storeData.loginState
+  };   
 }
 
+let mapDispatchToProps = function(dispatch){
+  return {
+
+  };
+}
+const PageConnected = connect(
+    mapStoreDataToProps,
+    mapDispatchToProps
+)(_Login)
 
 
-export default _Login;
+export default PageConnected;

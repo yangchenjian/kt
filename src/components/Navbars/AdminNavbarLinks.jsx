@@ -173,7 +173,7 @@ class HeaderLinks extends React.Component {
                         }
                         className={classes.dropdownItem}
                       >
-                       退出登陆
+                       退出登录
                       </MenuItem>
                     </MenuList>
                   </ClickAwayListener>

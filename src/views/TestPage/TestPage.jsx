@@ -133,11 +133,6 @@ let mapStoreDataToProps = function(storeData){
     test: storeData.test
   };
 }
-// function  (storeData) {
-//    console.log(storeData);
-// }
-
-
 
 let mapDispatchToProps = function(dispatch){
   return {};
