@@ -235,10 +235,7 @@ class Login extends React.Component{
       this.goConsole(userToken)
     }
   }
-
-
   handleTaggle(){
-
     this.setState({isDisable : false});
     this.setState({progressToggle : 0});
   }

@@ -74,6 +74,8 @@ class Dashboard extends React.Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
     console.log('this.state.mobileOpen:',this.state.mobileOpen);
   };
+
+  
   getRoute() {
     return this.props.location.pathname !== "/admin/maps";
   }
@@ -87,6 +89,21 @@ class Dashboard extends React.Component {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     window.addEventListener("resize", this.resizeFunction);
+    this.handleGobackLogin()
+
+  }
+
+     //后退事件监听
+  handleGobackLogin(){
+    this.props.history.listen(route => {
+      let toPath = route.pathname.substr(1)
+      let userId = window.sessionStorage.getItem("userId")
+      addEventListener('popstate',()=>{
+        if( toPath === 'login' && userId !== '' ){
+         window.sessionStorage.removeItem("userId")
+        }
+      }, false);
+    })
   }
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
