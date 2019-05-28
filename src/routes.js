@@ -24,7 +24,7 @@ import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.jsx";
 const dashboardRoutes = [
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "首页",
     icon: Dashboard,
     component: DashboardPage,
     layout: "/admin"

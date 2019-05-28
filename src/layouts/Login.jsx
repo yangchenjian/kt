@@ -24,7 +24,10 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Snackbar from '@material-ui/core/Snackbar';
 
-// 自己的静态资源 引入
+import { makeStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
+// 自身静态资源 引入
 import logo from "assets/img/katian_logo.png";
 
 
@@ -114,12 +117,14 @@ class Login extends React.Component{
     autoHideBar: 2000,
     statusMessage: '',
     isDisable: false,
+    progressToggle: 0,
   };
   // login组件为了数据获取的便捷，先把React.Component的属性继承下来
   constructor(props){
     super(props)
   }
   // -------------各种相关方法 全部都写到这个class类里面去--------------------
+  
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value });
   }
@@ -218,14 +223,12 @@ class Login extends React.Component{
     let inputAccount = this.state.account
     let inputPassword = this.state.password
     if(respAccountInfo.accound !== inputAccount){
-      console.log('数据库没有该账户!',this.state.isDisable);
-      /*o(=•ェ•=)m 为什么没有同步到 html的节点上去？ */
-      this.state.isDisable = false
-      console.log(this.state.isDisable);
+      alert('数据库没有该账户!');
+      this.handleTaggle()
       return
     }else if(respAccountInfo.password !== inputPassword){
-       this.state.isDisable = false
-      console.log("密码错误！");
+       alert("密码错误！");
+      this.handleTaggle()
       return
     }else{
       let userToken = respAccountInfo.userId
@@ -234,8 +237,27 @@ class Login extends React.Component{
   }
 
 
+  handleTaggle(){
+
+    this.setState({isDisable : false});
+    this.setState({progressToggle : 0});
+  }
+
+
+
   /*
-   
+    
+    handleProgress(){
+    let ele = document.getElementById('progressLine')
+    ReactDom.findDOMNode(ele).style.visibility = 'hidden'
+  }
+
+  componentDidMount(){
+    this.handleProgress()
+  }
+
+
+event.target.innerText = '请求中···'
 
  */
 
@@ -252,26 +274,27 @@ class Login extends React.Component{
   }
   login(event){
     if(this.state.account === '' && this.state.password === '' ){
-      console.log(event.target);
       this.showSnackbar(event)
     }else if( this.state.accInput && this.state.passInput ){  
         this.state.isDisable = true
-        event.target.innerText = '请求中···'
+        this.state.progressToggle = ''
         this.getData()
      }
   } 
   render(){
   // 初期已然完成继承 现在是用继承数据的时候了
     const { classes } = this.props;
-    const { vertical, horizontal, open,autoHideDuration,statusMessage } = this.state;
+    const { vertical, horizontal, open,autoHideDuration,statusMessage,isDisable,progressToggle } = this.state;
      {
       document.getElementsByTagName('html')[0].style.height = '100%'
       document.body.style.height = '100%'
       document.getElementById('root').style.height = '100%'
      }
     return (
+
       <div className={classes.container}>
         <div className={classes.loginWrap}>
+
         <div className={classes.loginHeader}>
           <img className={classes.logoPic} src={logo}></img>
           <p className={classes.headerTxt}>卡田科技-后台管理系统</p>
@@ -309,31 +332,28 @@ class Login extends React.Component{
               }
             />
             </FormControl>
+            <LinearProgress style={{opacity: progressToggle}}/>
             <Button
               id="loginBtn"
               variant="contained"
               color="primary"
               className={classNames(classes.button,classes.loginBtn)}
               onClick={(event)=>{this.login(event)}}
-              type="submit"
-              disabled={this.state.isDisable}
+              disabled={isDisable}
             >
             登录
             {/* 
 
               onBlur={(eve)=>{this.accountCheck(eve)}}
 
+                <LinearProgress />
+      <br />
+      <LinearProgress color="secondary" />
 
-            This Button uses a Font Icon, see the installation instructions in the docs.
-              className={classes.rightIcon,classes.kk}
 
-                <Icon className={classes.rightIcon}>
-              send
-            </Icon>
-             <Button onClick={this.handleClick({ vertical: 'top', horizontal: 'center' })}>
-            消息条出来吧
-          </Button>
-             */}
+
+
+            */}
           </Button>
          
           <Snackbar
@@ -346,6 +366,7 @@ class Login extends React.Component{
           />
           </div>
         </div>
+        
       </div>
     )
   }//render函数结束
