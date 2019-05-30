@@ -89,22 +89,27 @@ class Dashboard extends React.Component {
       const ps = new PerfectScrollbar(this.refs.mainPanel);
     }
     window.addEventListener("resize", this.resizeFunction);
-    this.handleGobackLogin()
 
   }
 
-     //后退事件监听
-  handleGobackLogin(){
+     /*
+      后退事件监听
+        handleGobackLogin(){
     this.props.history.listen(route => {
       let toPath = route.pathname.substr(1)
       let userId = window.sessionStorage.getItem("userId")
-      addEventListener('popstate',()=>{
+     
+      window.addEventListener('hashchange',()=>{
         if( toPath === 'login' && userId !== '' ){
-         window.sessionStorage.removeItem("userId")
+         //window.sessionStorage.removeItem("userId")
+         console.log("野猪");
         }
       }, false);
     })
   }
+
+      */
+
   componentDidUpdate(e) {
     if (e.history.location.pathname !== e.location.pathname) {
       this.refs.mainPanel.scrollTop = 0;

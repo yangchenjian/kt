@@ -33,7 +33,8 @@ import logo from "assets/img/katian_logo.png";
 
 
 // 数据请求
-import axios from "axios";
+import {getUsers} from "api/testApi.js";
+
 
 // css样式
 const styles = theme => ({
@@ -104,10 +105,8 @@ class Login extends React.Component{
   state = {
     account: '',
     accInput: false,
-    accountError: '',
     password: '',
     passInput: false,
-    passwordError: '',
     respAccountInfo: null,
     isLogin: false,
     showPassword: false,
@@ -118,6 +117,7 @@ class Login extends React.Component{
     statusMessage: '',
     isDisable: false,
     progressToggle: 0,
+    requestLock: false,
   };
   // login组件为了数据获取的便捷，先把React.Component的属性继承下来
   constructor(props){
@@ -131,34 +131,40 @@ class Login extends React.Component{
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }));
   };
-  handleClose = () => {
-    this.setState({ open: false });
+  snackbarClose = () => {
+     let delayTime = this.state.autoHideBar
+     setTimeout(()=>{
+      this.setState({ open: false });
+     },delayTime)
   };
 
-  showSnackbar(targetEle){
-    let delayTime = this.state.autoHideBar
+  regSnackbar(targetEle){
+    this.state.open = true
     if(targetEle.id === 'adornment-account'){
        this.setState({
           statusMessage: '请输入正确的账号/手机号码'
-        })
+        }) 
     }else if( targetEle.id === 'adornment-password' ){
        this.setState({
           statusMessage: '密码为6-20位数字或字母或下划线!'
-       })
+       })   
     }else if(targetEle.currentTarget.id === 'loginBtn'){
        this.setState({
           statusMessage: '请填写登录信息！'
        })
     }
-    this.state.open = true
-    setTimeout(()=>{
-      this.handleClose()
-    }, delayTime)
-
+    this.snackbarClose()
   }
-  /*  
-   showSnackbar = (targetEle)=>{
-   }
+  requestSnackbar(str){
+    this.state.open = true
+    this.setState({ statusMessage: str })
+    this.handleTaggle(false)
+    this.snackbarClose()
+  }
+
+  /* 
+
+
   */
   trimAll(val){
     let regTrim = /(^\s*)|(\s*$)/g
@@ -180,8 +186,9 @@ class Login extends React.Component{
     let targetEle = event.target
     tel = this.trimAll(tel)
     if(this.isTel(tel) === false){
-      this.showSnackbar(targetEle)
+      this.regSnackbar(targetEle)
       targetEle.focus()
+      this.handleTaggle(false)
       return 
     }else{
       this.setState({ accInput: true });
@@ -191,73 +198,70 @@ class Login extends React.Component{
     let password = this.password = event.target.value
     let targetEle = event.target
     if(this.isPassword(password) === false){
-      this.showSnackbar(targetEle)
+      this.regSnackbar(targetEle)
       targetEle.focus()
       return
     }else{
-      this.setState({ passInput: true }); 
+      this.setState({ passInput: true })
+
    }
   }
+
   getData(){
-    axios.post('http://rap2api.taobao.org/app/mock/177373/userInfo',
-          {
-            account: this.state.account,
-            password: this.state.password
-          })
-         .then(
+    let userInfo = {
+      account: this.state.account,
+      password: this.state.password
+    }
+    getUsers(userInfo).then(
+
           (res)=>{
+            this.state.requestLock = true
             this.handleLogin(res)
+            this.state.requestLock = false
           })
          .catch((err)=>{
-           this.state.isDisable = false
-            console.log('request fail')
+            this.handleTaggle(false)
+           console.log('interface fail!')
          })
   }
-
-/*
-
- */
+  
   handleLogin(dataInfo){
-    let statusInfo = dataInfo.status
+
+    console.log(dataInfo);
+    debugger
+
+    /*
+    
+       let statusInfo = dataInfo.status
     let respAccountInfo = this.state.respAccountInfo = dataInfo.data.data
     let inputAccount = this.state.account
     let inputPassword = this.state.password
     if(respAccountInfo.accound !== inputAccount){
-      alert('数据库没有该账户!');
-      this.handleTaggle()
-      return
+      this.requestSnackbar('数据库没有该账户信息！')
+      this.handleTaggle(false)
     }else if(respAccountInfo.password !== inputPassword){
-       alert("密码错误！");
-      this.handleTaggle()
-      return
+      this.requestSnackbar('密码错误！')
+      this.handleTaggle(false)
     }else{
       let userToken = respAccountInfo.userId
-      this.goConsole(userToken)
+      this.goConsole(userToken) 
+    }   
+
+
+
+
+     */
+   
+  }
+  handleTaggle(booleanVal){
+    if(booleanVal){
+      this.state.isDisable = true
+      this.state.progressToggle = ''
+    }else{
+      this.setState({isDisable : false});
+      this.setState({progressToggle : 0});
     }
   }
-  handleTaggle(){
-    this.setState({isDisable : false});
-    this.setState({progressToggle : 0});
-  }
-
-
-
-  /*
-    
-    handleProgress(){
-    let ele = document.getElementById('progressLine')
-    ReactDom.findDOMNode(ele).style.visibility = 'hidden'
-  }
-
-  componentDidMount(){
-    this.handleProgress()
-  }
-
-
-event.target.innerText = '请求中···'
-
- */
-
   goConsole(userToken){
     const {history,toPath} = this.props
     let url = toPath
@@ -271,11 +275,12 @@ event.target.innerText = '请求中···'
   }
   login(event){
     if(this.state.account === '' && this.state.password === '' ){
-      this.showSnackbar(event)
+      this.regSnackbar(event)
     }else if( this.state.accInput && this.state.passInput ){  
-        this.state.isDisable = true
-        this.state.progressToggle = ''
-        this.getData()
+        if(this.state.requestLock === false){
+          this.handleTaggle(true)
+          this.getData()
+        }   
      }
   } 
   render(){
@@ -340,15 +345,6 @@ event.target.innerText = '请求中···'
             >
             登录
             {/* 
-
-              onBlur={(eve)=>{this.accountCheck(eve)}}
-
-                <LinearProgress />
-      <br />
-      <LinearProgress color="secondary" />
-
-
-
 
             */}
           </Button>
