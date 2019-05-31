@@ -24,23 +24,6 @@ module.exports = {
         secure: false
       }
     }
-
-    /*
-    
-    port: 8082,
-    proxy: config.dev.proxyTable,
-    proxyTable: {
-   '/**': {
-    target: 'http://192.168.50.21',
-    changeOrigin: true,
-    secure: false
-   }
-     },
-
-     */
-  
-
-
   },
   module: {
     rules: [

@@ -214,36 +214,20 @@ class Login extends React.Component{
     }
     getUsers(userInfo).then(
        (res)=>{
-           console.log(res);
-          }
-          
-/* 
-
-  (res)=>{
-            this.state.requestLock = true
-            this.handleLogin(res)
-            this.state.requestLock = false
-          }
-
- */
-        
-
-
-          )
-         .catch((err)=>{
+        console.log(res); 
+        /*
+        this.handleLogin(res)
+        this.state.requestLock = false
+        */
+          })
+        .catch((err)=>{
             this.handleTaggle(false)
            console.log('interface fail!')
          })
   }
   
   handleLogin(dataInfo){
-
-    console.log(dataInfo);
-    debugger
-
-    /*
-    
-       let statusInfo = dataInfo.status
+    let statusInfo = dataInfo.status
     let respAccountInfo = this.state.respAccountInfo = dataInfo.data.data
     let inputAccount = this.state.account
     let inputPassword = this.state.password
@@ -256,13 +240,7 @@ class Login extends React.Component{
     }else{
       let userToken = respAccountInfo.userId
       this.goConsole(userToken) 
-    }   
-
-
-
-
-     */
-   
+    }    
   }
   handleTaggle(booleanVal){
     if(booleanVal){
