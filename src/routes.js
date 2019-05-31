@@ -31,7 +31,7 @@ const dashboardRoutes = [
   },
   {
     path: "/test",
-    name: "Test Page",
+    name: "配置列表",
     icon: Subject,
     component: TestPage,
     layout: "/admin"

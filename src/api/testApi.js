@@ -1,28 +1,45 @@
 import axios from "axios";
 
-export function getItems() {
-  return axios.get("/testapi.json");
-}
 
-export function createItem(item) {
-  return axios.post("/testapi.json", item);
-}
+axios.defaults.timeout = 5000; 
+// 请求拦截器 
+axios.interceptors.request.use( 
+    config => { 
+        if (window.sessionStorage.getItem('userId')) {
+          let  userToken = window.sessionStorage.getItem('userId')
+          config.headers.common["Authorization"] = `Bearer ${userToken}`; 
+        } 
+        return config; 
+    }, 
+    err => { 
+        return Promise.reject(err); 
+    } 
+);
 
-export function updateItem(item) {
-  return axios.put("/testapi.json/" + item.ID, item);
-}
-
-export function deleteItem(id) {
-  return axios.delete("/testapi.json/" + id);
-}
 
 
+// 响应拦截器 
+axios.interceptors.response.use( 
+    response => { 
+        return response; 
+    }, 
+    error => { 
+        if (error.response) { 
+            switch (error.response.status) { 
+                case 401: 
+                  this.logout()
+            } 
+        } 
+        console.log(error);//console : Error: Request failed with status code 402 
+        return Promise.reject(error) 
+}) 
 
-/*
-http://192.168.50.21:8082/users/login
-http://rap2api.taobao.org/app/mock/177373/userInfo   
-*/
+  function logout () {
+     window.sessionStorage.removeItem('userId');
+      window.location.href='/#/login'
+  }
 
+/* 用户登录 */
 export function getUsers(userInfo){
   return axios.post('/users/login',{
     username: userInfo.account,
@@ -30,5 +47,17 @@ export function getUsers(userInfo){
   }
   )
 }
-
-
+/* 配置列表 */
+export function getConfList(parms){
+  return axios.get('/configs',{
+    page: parms.pageNum,
+  })
+}
+/* 管理员列表 */
+export function getUserList(pageNum){
+  return axios.get('/users',{
+    params:{
+      page: pageNum, 
+    }
+  })
+}

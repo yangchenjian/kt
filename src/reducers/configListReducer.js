@@ -2,9 +2,9 @@
 export default function(state = [], action){
 
 	switch( action.type ){
-
-		case "SET_TEST":
-		return action.data;
+		case "GET_CONFLIST":
+		return action.configListData;
+    debugger
 		default :
 			return state;
   }

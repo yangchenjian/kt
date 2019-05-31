@@ -24,7 +24,10 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import avatar from "assets/img/faces/marc.jpg";
-import {getItems} from "api/testApi.js";
+import {getConfList} from "api/testApi.js";
+import {getUserList} from "api/testApi.js";
+
+
 import store from "../../store.js";
 
 const styles = {
@@ -70,30 +73,42 @@ class TestPage extends React.Component {
       // 一般来说 这儿得加个return 为什么这儿不用添加呢？
       console.log('test data exist.');
     }else{
-      this.loadTestData();
+      this.loadConfListData();
     }
   }
 
-// 获取测试数据方法
-  loadTestData(){
-      getItems().then((res)=>{
-        if(res&&res.data){
+  /*
+  
+   if(res&&res.data){
           let data = res.data
           store.dispatch({
              type:'SET_TEST',
              data     
           })
         }
-      }).catch((err)=>{
-        console.log('请求数据出错！',err);
-      })
+   */
+
+  loadConfListData(){
+    let parms = {
+      pageNum: 1
+    }
+    getConfList(parms).then((res)=>{
+      let data = res.data.data
+       store.dispatch({
+             type:'GET_CONFLIST',
+             configListData: data,  
+          })
+       console.table(data);
+    }).catch((err)=>{
+       console.log('请求数据出错！',err);
+    })
 
   }
 
 // 渲染方法
 // 很重要 比如 创建虚拟dom diff算法比对替换 更新视图dom树都在这个生命阶段进行
   render() {
-    const { test,classes, ...rest } = this.props;
+    const { configListData,classes, ...rest } = this.props;
     // 为啥 组件的props的test属性中没有数据，既然没有数据 为什么不影响渲染,为啥还能遍历？
     // jsx的语法还要熟悉一下 jsx的注释写法要注意 不然会报错的 例子  {/*console.log('my-key',test)*/}
     // console.log('key',test);
@@ -107,7 +122,7 @@ class TestPage extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {test.map(row => (
+            {configListData.map(row => (
               // 凡是要遍历那就必须挂上key值
               <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
@@ -130,7 +145,7 @@ let pageObj = withStyles(styles)(TestPage);
 let mapStoreDataToProps = function(storeData){
   return {
     loading: storeData.loading,
-    test: storeData.test
+    configListData: storeData.configListData
   };
 }
 

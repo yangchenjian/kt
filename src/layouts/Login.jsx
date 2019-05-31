@@ -138,6 +138,17 @@ class Login extends React.Component{
      },delayTime)
   };
 
+    handleTaggle(booleanVal){
+    if(booleanVal){
+      this.state.isDisable = true
+      this.state.progressToggle = ''
+    }else{
+      this.setState({isDisable : false});
+      this.setState({progressToggle : 0});
+    }
+  }
+
+
   regSnackbar(targetEle){
     this.state.open = true
     if(targetEle.id === 'adornment-account'){
@@ -172,7 +183,8 @@ class Login extends React.Component{
     return val
   }
   isTel(val){
-    let regTel = /^1[34578]\d{9}$/
+    //let regTel = /^1[34578]\d{9}$/
+    let regTel = /^[A-Za-z0-9_\-\u4e00-\u9fa5]+$/
     let result = regTel.test(val)
     return result
   }
@@ -214,19 +226,16 @@ class Login extends React.Component{
     }
     getUsers(userInfo).then(
        (res)=>{
-        console.log(res); 
-        /*
         this.handleLogin(res)
-        this.state.requestLock = false
-        */
           })
         .catch((err)=>{
-            this.handleTaggle(false)
+           this.handleTaggle(false)
            console.log('interface fail!')
          })
   }
   
   handleLogin(dataInfo){
+    /*
     let statusInfo = dataInfo.status
     let respAccountInfo = this.state.respAccountInfo = dataInfo.data.data
     let inputAccount = this.state.account
@@ -241,17 +250,18 @@ class Login extends React.Component{
       let userToken = respAccountInfo.userId
       this.goConsole(userToken) 
     }    
-  }
-  handleTaggle(booleanVal){
-    if(booleanVal){
-      this.state.isDisable = true
-      this.state.progressToggle = ''
-    }else{
-      this.setState({isDisable : false});
-      this.setState({progressToggle : 0});
-    }
+     */  
+    //let userToken = dataInfo.data.access_token
+    let userToken = dataInfo.data.data.access_token
+    this.goConsole(userToken) 
+
   }
   goConsole(userToken){
+    if(userToken === undefined){ 
+      console.log("用户token是undefined！") 
+      this.handleTaggle(false)
+      return 
+    }
     const {history,toPath} = this.props
     let url = toPath
     window.sessionStorage.setItem("userId", userToken)

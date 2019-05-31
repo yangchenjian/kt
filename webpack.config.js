@@ -19,7 +19,8 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname,'src'),
     proxy: {
-      '/users': {
+      /* /users */
+      '/': {
         target: 'http://192.168.50.21:8082',
         secure: false
       }
@@ -51,7 +52,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(__dirname,'src','index.html')
+      template: path.join(__dirname,'src','index.html'),
+      favicon: './src/assets/img/favicon.ico'
     })
   ]
 };
