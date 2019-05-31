@@ -213,12 +213,23 @@ class Login extends React.Component{
       password: this.state.password
     }
     getUsers(userInfo).then(
+       (res)=>{
+           console.log(res);
+          }
+          
+/* 
 
-          (res)=>{
+  (res)=>{
             this.state.requestLock = true
             this.handleLogin(res)
             this.state.requestLock = false
-          })
+          }
+
+ */
+        
+
+
+          )
          .catch((err)=>{
             this.handleTaggle(false)
            console.log('interface fail!')

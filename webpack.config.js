@@ -14,8 +14,33 @@ module.exports = {
   resolve: {
     modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
+
+ 
   devServer: {
-    contentBase: path.join(__dirname,'src')
+    contentBase: path.join(__dirname,'src'),
+    proxy: {
+      '/users': {
+        target: 'http://192.168.50.21:8082',
+        secure: false
+      }
+    }
+
+    /*
+    
+    port: 8082,
+    proxy: config.dev.proxyTable,
+    proxyTable: {
+   '/**': {
+    target: 'http://192.168.50.21',
+    changeOrigin: true,
+    secure: false
+   }
+     },
+
+     */
+  
+
+
   },
   module: {
     rules: [
