@@ -25,7 +25,8 @@ import CardFooter from "components/Card/CardFooter.jsx";
 
 import avatar from "assets/img/faces/marc.jpg";
 import {getConfList} from "api/testApi.js";
-import {getUserList} from "api/testApi.js";
+import {getAdminList} from "api/testApi.js";
+
 
 
 import store from "../../store.js";
@@ -49,20 +50,13 @@ const styles = {
   }
 };
 
-// 利用class关键字与React.Component创建名为 TestPage 的组件
-//   组建名字必须是大写
-//   class类选择器 在使用时应更正成 className
-//   在class关键字内部框架默认使用的而是严格模式
 
 class TestPage extends React.Component {
-// function TestPage(props) {
-  // const { classes } = props;
-  // TestPage 继承 React.Component 的所有属性
   constructor(props) {
     super(props);
-}
+  }
 
-//  componentWillMount 生命周期之一  意义 组件即将被装载、渲染到页面上
+  //componentWillMount 生命周期之一  意义 组件即将被装载、渲染到页面上
   componentWillMount(){
     // 要注意到 this 就是指向当前的 TestPage 组件
     console.log('test page 已经渲染.')
@@ -73,20 +67,9 @@ class TestPage extends React.Component {
       // 一般来说 这儿得加个return 为什么这儿不用添加呢？
       console.log('test data exist.');
     }else{
-      this.loadConfListData();
+      this.loadConfListData()
     }
   }
-
-  /*
-  
-   if(res&&res.data){
-          let data = res.data
-          store.dispatch({
-             type:'SET_TEST',
-             data     
-          })
-        }
-   */
 
   loadConfListData(){
     let parms = {
@@ -98,12 +81,26 @@ class TestPage extends React.Component {
              type:'GET_CONFLIST',
              configListData: data,  
           })
-       console.table(data);
     }).catch((err)=>{
        console.log('请求数据出错！',err);
     })
 
   }
+
+
+  filterAutoload(data){
+    if(data===1){
+      let str = '处于自动加载'
+      return str
+    }else if(data===0){
+      let str = '处于手动加载'
+      return str
+    }
+  }
+
+
+
+
 
 // 渲染方法
 // 很重要 比如 创建虚拟dom diff算法比对替换 更新视图dom树都在这个生命阶段进行
@@ -117,21 +114,17 @@ class TestPage extends React.Component {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell>姓名</TableCell>
-              <TableCell align="right">ID标识</TableCell>
+            {configListData.map(row => (
+              <TableCell align="center" key={row.id}>{row.title}</TableCell>
+            ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {configListData.map(row => (
-              // 凡是要遍历那就必须挂上key值
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.id}</TableCell>
-
+              <TableRow >
+                 {configListData.map(row => (
+                <TableCell key={row.id} component="th" align="center" scope="row">{row.value}</TableCell>
+                 ))}
               </TableRow>
-            ))}
           </TableBody>
         </Table>
       </div>

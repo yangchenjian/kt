@@ -53,8 +53,21 @@ export function getConfList(parms){
     page: parms.pageNum,
   })
 }
+export function removeConfig(confId) {
+  return axios.delete('/configs',{
+    params:{
+      id:confId
+    }
+  })
+}
+
+
+
+
+
+
 /* 管理员列表 */
-export function getUserList(pageNum){
+export function getAdminList(pageNum){
   return axios.get('/users',{
     params:{
       page: pageNum, 

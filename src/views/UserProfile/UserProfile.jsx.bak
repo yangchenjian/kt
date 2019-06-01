@@ -14,7 +14,6 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 
 import avatar from "assets/img/faces/marc.jpg";
-import {getAdminList} from "api/testApi.js";
 
 const styles = {
   cardCategoryWhite: {
@@ -34,10 +33,6 @@ const styles = {
     textDecoration: "none"
   }
 };
-
-
-
-
 
 function UserProfile(props) {
   const { classes } = props;
